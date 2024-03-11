@@ -2,6 +2,7 @@ mod eip155;
 mod eip1559;
 mod eip2930;
 mod eip4844;
+mod eip5806;
 mod legacy;
 
 use k256::SecretKey;
@@ -9,7 +10,7 @@ use k256::SecretKey;
 pub use self::{
     eip155::Eip155TransactionRequest, eip1559::Eip1559TransactionRequest,
     eip2930::Eip2930TransactionRequest, eip4844::Eip4844TransactionRequest,
-    legacy::LegacyTransactionRequest,
+    eip5806::Eip5806TransactionRequest, legacy::LegacyTransactionRequest,
 };
 use crate::{signature::SignatureError, transaction::SignedTransaction, Address, U256};
 

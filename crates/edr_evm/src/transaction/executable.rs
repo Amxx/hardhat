@@ -237,7 +237,8 @@ impl From<ExecutableTransaction> for TxEnv {
                 gas_limit,
                 gas_price: max_fee_per_gas,
                 gas_priority_fee: Some(max_priority_fee_per_gas),
-                transact_to: TransactTo::DelegateCall(address), // TODO implement DelegateCall in revm
+                transact_to: TransactTo::DelegateCall(to), // TODO implement DelegateCall in revm
+                value: U256::ZERO,
                 data: input,
                 chain_id,
                 nonce: Some(nonce),
@@ -252,6 +253,9 @@ impl From<ExecutableTransaction> for TxEnv {
 /// Error that occurs when trying to convert the JSON-RPC `Transaction` type.
 #[derive(Debug, thiserror::Error)]
 pub enum TransactionConversionError {
+    /// Missing value
+    #[error("Missing access list")]
+    MissingValue,
     /// Missing access list
     #[error("Missing access list")]
     MissingAccessList,
@@ -298,7 +302,7 @@ impl TryFrom<Transaction> for ExecutableTransaction {
                         gas_price: value.gas_price,
                         gas_limit: value.gas.to(),
                         kind,
-                        value: value.value,
+                        value: value.value.ok_or(TransactionConversionError::MissingValue)?.into(),
                         input: value.input,
                         signature: Signature {
                             r: value.r,
@@ -314,7 +318,7 @@ impl TryFrom<Transaction> for ExecutableTransaction {
                         gas_price: value.gas_price,
                         gas_limit: value.gas.to(),
                         kind,
-                        value: value.value,
+                        value: value.value.ok_or(TransactionConversionError::MissingValue)?.into(),
                         input: value.input,
                         signature: Signature {
                             r: value.r,
@@ -335,7 +339,7 @@ impl TryFrom<Transaction> for ExecutableTransaction {
                 gas_price: value.gas_price,
                 gas_limit: value.gas.to(),
                 kind,
-                value: value.value,
+                value: value.value.ok_or(TransactionConversionError::MissingValue)?.into(),
                 input: value.input,
                 access_list: value
                     .access_list
@@ -360,7 +364,7 @@ impl TryFrom<Transaction> for ExecutableTransaction {
                     .ok_or(TransactionConversionError::MissingMaxFeePerGas)?,
                 gas_limit: value.gas.to(),
                 kind,
-                value: value.value,
+                value: value.value.ok_or(TransactionConversionError::MissingValue)?.into(),
                 input: value.input,
                 access_list: value
                     .access_list
@@ -390,7 +394,7 @@ impl TryFrom<Transaction> for ExecutableTransaction {
                 to: value
                     .to
                     .ok_or(TransactionConversionError::MissingReceiverAddress)?,
-                value: value.value,
+                value: value.value.ok_or(TransactionConversionError::MissingValue)?.into(),
                 input: value.input,
                 access_list: value
                     .access_list
@@ -417,7 +421,9 @@ impl TryFrom<Transaction> for ExecutableTransaction {
                     .max_fee_per_gas
                     .ok_or(TransactionConversionError::MissingMaxFeePerGas)?,
                 gas_limit: value.gas.to(),
-                kind,
+                to: value
+                    .to
+                    .ok_or(TransactionConversionError::MissingReceiverAddress)?,
                 input: value.input,
                 access_list: value
                     .access_list

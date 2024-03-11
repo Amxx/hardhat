@@ -6,10 +6,7 @@ use alloy_rlp::{RlpDecodable, RlpEncodable};
 use crate::{
     access_list::AccessList,
     signature::{Signature, SignatureError},
-    transaction::{
-        fake_signature::recover_fake_signature, kind::TransactionKind,
-        request::Eip5806TransactionRequest,
-    },
+    transaction::{fake_signature::recover_fake_signature, request::Eip5806TransactionRequest},
     utils::envelop_bytes,
     Address, Bytes, B256, U256,
 };
@@ -26,7 +23,7 @@ pub struct Eip5806SignedTransaction {
     pub max_fee_per_gas: U256,
     #[cfg_attr(feature = "serde", serde(with = "crate::serde::u64"))]
     pub gas_limit: u64,
-    pub kind: TransactionKind,
+    pub to: Address,
     pub input: Bytes,
     pub access_list: AccessList,
     pub odd_y_parity: bool,
@@ -77,7 +74,7 @@ impl PartialEq for Eip5806SignedTransaction {
             && self.max_priority_fee_per_gas == other.max_priority_fee_per_gas
             && self.max_fee_per_gas == other.max_fee_per_gas
             && self.gas_limit == other.gas_limit
-            && self.kind == other.kind
+            && self.to == other.to
             && self.input == other.input
             && self.access_list == other.access_list
             && self.odd_y_parity == other.odd_y_parity
@@ -104,7 +101,6 @@ impl PartialEq for Eip5806SignedTransaction {
 //         "e331b6d69882b4cb4ea581d88e0b604039a3de5967688d3dcffdd2270c0fd109";
 
 //     fn dummy_request() -> Eip5806TransactionRequest {
-//         let to = Address::from_str("0xc014ba5ec014ba5ec014ba5ec014ba5ec014ba5e").unwrap();
 //         let input = hex::decode("1234").unwrap();
 //         Eip5806TransactionRequest {
 //             chain_id: 1,
@@ -112,7 +108,7 @@ impl PartialEq for Eip5806SignedTransaction {
 //             max_priority_fee_per_gas: U256::from(2),
 //             max_fee_per_gas: U256::from(5),
 //             gas_limit: 3,
-//             kind: TransactionKind::Call(to),
+//             to: Address::from_str("0xc014ba5ec014ba5ec014ba5ec014ba5ec014ba5e").unwrap(),
 //             input: Bytes::from(input),
 //             access_list: vec![AccessListItem {
 //                 address: Address::ZERO,

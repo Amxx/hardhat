@@ -72,7 +72,7 @@ impl SignedTransaction {
             SignedTransaction::Eip2930(tx) => tx.value,
             SignedTransaction::Eip1559(tx) => tx.value,
             SignedTransaction::Eip4844(tx) => tx.value,
-            SignedTransaction::Eip5806(tx) => U256::ZERO,
+            SignedTransaction::Eip5806(_) => U256::ZERO,
         }
     }
 
