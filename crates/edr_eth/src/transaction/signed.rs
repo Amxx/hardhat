@@ -2,6 +2,7 @@ mod eip155;
 mod eip1559;
 mod eip2930;
 mod eip4844;
+mod eip5806;
 mod legacy;
 
 use alloy_rlp::{Buf, BufMut, Decodable};
@@ -9,7 +10,7 @@ use alloy_rlp::{Buf, BufMut, Decodable};
 pub use self::{
     eip155::Eip155SignedTransaction, eip1559::Eip1559SignedTransaction,
     eip2930::Eip2930SignedTransaction, eip4844::Eip4844SignedTransaction,
-    legacy::LegacySignedTransaction,
+    eip5806::Eip5806SignedTransaction, legacy::LegacySignedTransaction,
 };
 use super::kind::TransactionKind;
 use crate::{
@@ -34,6 +35,8 @@ pub enum SignedTransaction {
     Eip1559(Eip1559SignedTransaction),
     /// EIP-4844 transaction
     Eip4844(Eip4844SignedTransaction),
+    /// EIP-5806 transaction
+    Eip5806(Eip5806SignedTransaction),
 }
 
 impl SignedTransaction {
@@ -45,6 +48,7 @@ impl SignedTransaction {
             SignedTransaction::Eip2930(tx) => tx.gas_price,
             SignedTransaction::Eip1559(tx) => tx.max_fee_per_gas,
             SignedTransaction::Eip4844(tx) => tx.max_fee_per_gas,
+            SignedTransaction::Eip5806(tx) => tx.max_fee_per_gas,
         }
     }
 
@@ -56,6 +60,7 @@ impl SignedTransaction {
             SignedTransaction::Eip2930(tx) => tx.gas_limit,
             SignedTransaction::Eip1559(tx) => tx.gas_limit,
             SignedTransaction::Eip4844(tx) => tx.gas_limit,
+            SignedTransaction::Eip5806(tx) => tx.gas_limit,
         }
     }
 
@@ -67,6 +72,7 @@ impl SignedTransaction {
             SignedTransaction::Eip2930(tx) => tx.value,
             SignedTransaction::Eip1559(tx) => tx.value,
             SignedTransaction::Eip4844(tx) => tx.value,
+            SignedTransaction::Eip5806(tx) => U256::ZERO,
         }
     }
 
@@ -78,6 +84,7 @@ impl SignedTransaction {
             SignedTransaction::Eip2930(tx) => &tx.input,
             SignedTransaction::Eip1559(tx) => &tx.input,
             SignedTransaction::Eip4844(tx) => &tx.input,
+            SignedTransaction::Eip5806(tx) => &tx.input,
         }
     }
 
@@ -88,6 +95,7 @@ impl SignedTransaction {
             SignedTransaction::Eip2930(tx) => Some(&tx.access_list),
             SignedTransaction::Eip1559(tx) => Some(&tx.access_list),
             SignedTransaction::Eip4844(tx) => Some(&tx.access_list),
+            SignedTransaction::Eip5806(tx) => Some(&tx.access_list),
         }
     }
 
@@ -104,6 +112,7 @@ impl SignedTransaction {
             | SignedTransaction::Eip2930(_) => None,
             SignedTransaction::Eip1559(tx) => Some(tx.max_fee_per_gas),
             SignedTransaction::Eip4844(tx) => Some(tx.max_fee_per_gas),
+            SignedTransaction::Eip5806(tx) => Some(tx.max_fee_per_gas),
         }
     }
 
@@ -115,6 +124,7 @@ impl SignedTransaction {
             | SignedTransaction::Eip2930(_) => None,
             SignedTransaction::Eip1559(tx) => Some(tx.max_priority_fee_per_gas),
             SignedTransaction::Eip4844(tx) => Some(tx.max_priority_fee_per_gas),
+            SignedTransaction::Eip5806(tx) => Some(tx.max_priority_fee_per_gas),
         }
     }
 
@@ -124,7 +134,8 @@ impl SignedTransaction {
             SignedTransaction::PreEip155Legacy(_)
             | SignedTransaction::PostEip155Legacy(_)
             | SignedTransaction::Eip2930(_)
-            | SignedTransaction::Eip1559(_) => None,
+            | SignedTransaction::Eip1559(_)
+            | SignedTransaction::Eip5806(_) => None,
             SignedTransaction::Eip4844(tx) => Some(tx.max_fee_per_blob_gas),
         }
     }
@@ -135,7 +146,8 @@ impl SignedTransaction {
             SignedTransaction::PreEip155Legacy(_)
             | SignedTransaction::PostEip155Legacy(_)
             | SignedTransaction::Eip2930(_)
-            | SignedTransaction::Eip1559(_) => None,
+            | SignedTransaction::Eip1559(_)
+            | SignedTransaction::Eip5806(_) => None,
             SignedTransaction::Eip4844(tx) => Some(tx.blob_hashes.clone()),
         }
     }
@@ -153,6 +165,7 @@ impl SignedTransaction {
             SignedTransaction::Eip2930(t) => t.nonce,
             SignedTransaction::Eip1559(t) => t.nonce,
             SignedTransaction::Eip4844(t) => t.nonce,
+            SignedTransaction::Eip5806(t) => t.nonce,
         }
     }
 
@@ -164,6 +177,7 @@ impl SignedTransaction {
             SignedTransaction::Eip2930(t) => Some(t.chain_id),
             SignedTransaction::Eip1559(t) => Some(t.chain_id),
             SignedTransaction::Eip4844(t) => Some(t.chain_id),
+            SignedTransaction::Eip5806(t) => Some(t.chain_id),
         }
     }
 
@@ -189,6 +203,11 @@ impl SignedTransaction {
         matches!(self, SignedTransaction::Eip1559(_))
     }
 
+    /// Returns whether this is an EIP-1559 transaction
+    pub fn is_eip5806(&self) -> bool {
+        matches!(self, SignedTransaction::Eip5806(_))
+    }
+
     /// Computes the hash of the transaction.
     pub fn hash(&self) -> &B256 {
         match self {
@@ -197,6 +216,7 @@ impl SignedTransaction {
             SignedTransaction::Eip2930(t) => t.hash(),
             SignedTransaction::Eip1559(t) => t.hash(),
             SignedTransaction::Eip4844(t) => t.hash(),
+            SignedTransaction::Eip5806(t) => t.hash(),
         }
     }
 
@@ -208,6 +228,7 @@ impl SignedTransaction {
             SignedTransaction::Eip2930(tx) => tx.recover(),
             SignedTransaction::Eip1559(tx) => tx.recover(),
             SignedTransaction::Eip4844(tx) => tx.recover(),
+            SignedTransaction::Eip5806(tx) => tx.recover(),
         }
     }
 
@@ -219,6 +240,7 @@ impl SignedTransaction {
             SignedTransaction::Eip2930(tx) => tx.kind,
             SignedTransaction::Eip1559(tx) => tx.kind,
             SignedTransaction::Eip4844(tx) => TransactionKind::Call(tx.to),
+            SignedTransaction::Eip5806(tx) => TransactionKind::Call(tx.to),
         }
     }
 
@@ -247,6 +269,11 @@ impl SignedTransaction {
                 s: tx.s,
                 v: u64::from(tx.odd_y_parity),
             },
+            SignedTransaction::Eip5806(tx) => Signature {
+                r: tx.r,
+                s: tx.s,
+                v: u64::from(tx.odd_y_parity),
+            },
         }
     }
 
@@ -256,6 +283,7 @@ impl SignedTransaction {
             SignedTransaction::Eip2930(_) => 1,
             SignedTransaction::Eip1559(_) => 2,
             SignedTransaction::Eip4844(_) => 3,
+            SignedTransaction::Eip5806(_) => 4,
         }
     }
 
@@ -294,6 +322,13 @@ impl Decodable for SignedTransaction {
                     Eip4844SignedTransaction::decode(buf)?,
                 ))
             }
+            0x04 => {
+                buf.advance(1);
+
+                Ok(SignedTransaction::Eip5806(
+                    Eip5806SignedTransaction::decode(buf)?,
+                ))
+            }
             byte if is_list(byte) => {
                 let tx = LegacySignedTransaction::decode(buf)?;
                 if tx.signature.v >= 35 {
@@ -315,6 +350,7 @@ impl alloy_rlp::Encodable for SignedTransaction {
             SignedTransaction::Eip2930(tx) => enveloped(1, tx, out),
             SignedTransaction::Eip1559(tx) => enveloped(2, tx, out),
             SignedTransaction::Eip4844(tx) => enveloped(3, tx, out),
+            SignedTransaction::Eip5806(tx) => enveloped(4, tx, out),
         }
     }
 
@@ -325,6 +361,7 @@ impl alloy_rlp::Encodable for SignedTransaction {
             SignedTransaction::Eip2930(tx) => tx.length() + 1,
             SignedTransaction::Eip1559(tx) => tx.length() + 1,
             SignedTransaction::Eip4844(tx) => tx.length() + 1,
+            SignedTransaction::Eip5806(tx) => tx.length() + 1,
         }
     }
 }
@@ -356,6 +393,12 @@ impl From<Eip1559SignedTransaction> for SignedTransaction {
 impl From<Eip4844SignedTransaction> for SignedTransaction {
     fn from(transaction: Eip4844SignedTransaction) -> Self {
         Self::Eip4844(transaction)
+    }
+}
+
+impl From<Eip5806SignedTransaction> for SignedTransaction {
+    fn from(transaction: Eip5806SignedTransaction) -> Self {
+        Self::Eip5806(transaction)
     }
 }
 
@@ -498,6 +541,21 @@ mod tests {
                 input: Bytes::from(vec![1, 2]),
                 access_list: vec![].into(),
                 blob_hashes: vec![B256::random(), B256::random()],
+                odd_y_parity: true,
+                r: U256::default(),
+                s: U256::default(),
+                hash: OnceLock::new(),
+                is_fake: false
+            }),
+            eip5806 => SignedTransaction::Eip5806(Eip5806SignedTransaction {
+                chain_id: 1,
+                nonce: 0,
+                max_priority_fee_per_gas: U256::from(1),
+                max_fee_per_gas: U256::from(2),
+                gas_limit: 3,
+                kind: TransactionKind::Create,
+                input: Bytes::from(vec![1, 2]),
+                access_list: vec![].into(),
                 odd_y_parity: true,
                 r: U256::default(),
                 s: U256::default(),
@@ -676,6 +734,7 @@ mod tests {
                 SignedTransaction::Eip2930(transaction) => transaction.into(),
                 SignedTransaction::Eip1559(transaction) => transaction.into(),
                 SignedTransaction::Eip4844(transaction) => transaction.into(),
+                SignedTransaction::Eip5806(transaction) => transaction.into(),
             }
         }
     }

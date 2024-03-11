@@ -19,6 +19,7 @@ use crate::{signature::SignatureError, transaction::SignedTransaction, Address, 
 /// 1. Legacy (pre-EIP2718) [`LegacyTransactionRequest`]
 /// 2. EIP2930 (state access lists) [`EIP2930TransactionRequest`]
 /// 3. EIP1559 [`EIP1559TransactionRequest`]
+/// 3. EIP5806 [`EIP5806TransactionRequest`]
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub enum TransactionRequest {
     /// A legacy transaction request
@@ -31,6 +32,8 @@ pub enum TransactionRequest {
     Eip1559(Eip1559TransactionRequest),
     /// An EIP-4844 transaction request
     Eip4844(Eip4844TransactionRequest),
+    /// An EIP-5806 transaction request
+    Eip5806(Eip5806TransactionRequest),
 }
 
 impl TransactionRequest {
@@ -42,6 +45,7 @@ impl TransactionRequest {
             TransactionRequest::Eip2930(transaction) => Some(transaction.chain_id),
             TransactionRequest::Eip1559(transaction) => Some(transaction.chain_id),
             TransactionRequest::Eip4844(transaction) => Some(transaction.chain_id),
+            TransactionRequest::Eip5806(transaction) => Some(transaction.chain_id),
         }
     }
 
@@ -53,6 +57,7 @@ impl TransactionRequest {
             TransactionRequest::Eip2930(transaction) => &transaction.gas_price,
             TransactionRequest::Eip1559(transaction) => &transaction.max_fee_per_gas,
             TransactionRequest::Eip4844(transaction) => &transaction.max_fee_per_gas,
+            TransactionRequest::Eip5806(transaction) => &transaction.max_fee_per_gas,
         }
     }
 
@@ -64,6 +69,7 @@ impl TransactionRequest {
             | TransactionRequest::Eip2930(_) => None,
             TransactionRequest::Eip1559(transaction) => Some(&transaction.max_fee_per_gas),
             TransactionRequest::Eip4844(transaction) => Some(&transaction.max_fee_per_gas),
+            TransactionRequest::Eip5806(transaction) => Some(&transaction.max_fee_per_gas),
         }
     }
 
@@ -75,6 +81,7 @@ impl TransactionRequest {
             | TransactionRequest::Eip2930(_) => None,
             TransactionRequest::Eip1559(transaction) => Some(&transaction.max_priority_fee_per_gas),
             TransactionRequest::Eip4844(transaction) => Some(&transaction.max_priority_fee_per_gas),
+            TransactionRequest::Eip5806(transaction) => Some(&transaction.max_priority_fee_per_gas),
         }
     }
 
@@ -86,6 +93,7 @@ impl TransactionRequest {
             TransactionRequest::Eip2930(transaction) => transaction.nonce,
             TransactionRequest::Eip1559(transaction) => transaction.nonce,
             TransactionRequest::Eip4844(transaction) => transaction.nonce,
+            TransactionRequest::Eip5806(transaction) => transaction.nonce,
         }
     }
 
@@ -96,6 +104,7 @@ impl TransactionRequest {
             TransactionRequest::Eip2930(transaction) => transaction.sign(secret_key)?.into(),
             TransactionRequest::Eip1559(transaction) => transaction.sign(secret_key)?.into(),
             TransactionRequest::Eip4844(transaction) => transaction.sign(secret_key)?.into(),
+            TransactionRequest::Eip5806(transaction) => transaction.sign(secret_key)?.into(),
         })
     }
 
@@ -106,6 +115,7 @@ impl TransactionRequest {
             TransactionRequest::Eip2930(transaction) => transaction.fake_sign(sender).into(),
             TransactionRequest::Eip1559(transaction) => transaction.fake_sign(sender).into(),
             TransactionRequest::Eip4844(transaction) => transaction.fake_sign(sender).into(),
+            TransactionRequest::Eip5806(transaction) => transaction.fake_sign(sender).into(),
         }
     }
 }

@@ -2,8 +2,8 @@ use crate::{signature::Signature, Address, U256};
 
 // Must match the Hardhat implementation to make sure that transaction hashes
 // and by extension block hashes match for identical input.
-// Hardhat legacy and EIP-155 sender transactions use `v` value 0 while EIP-1559
-// and EIP-2930 transactions use `v` value 1.
+// Hardhat legacy and EIP-155 sender transactions use `v` value 0 while EIP-1559,
+// EIP-2930 and EIP-5806 transactions use `v` value 1.
 pub(super) fn make_fake_signature<const V: usize>(sender: &Address) -> Signature {
     // The only requirements on a fake signature are that when it is encoded as part
     // of a transaction, it produces the same hash for the same transaction from

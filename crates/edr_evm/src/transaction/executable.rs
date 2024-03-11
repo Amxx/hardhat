@@ -6,7 +6,7 @@ use edr_eth::{
     signature::Signature,
     transaction::{
         Eip1559SignedTransaction, Eip155SignedTransaction, Eip2930SignedTransaction,
-        Eip4844SignedTransaction, LegacySignedTransaction, SignedTransaction, TransactionKind,
+        Eip4844SignedTransaction, Eip5806SignedTransaction, LegacySignedTransaction, SignedTransaction, TransactionKind,
     },
     Address, U256,
 };
@@ -223,6 +223,28 @@ impl From<ExecutableTransaction> for TxEnv {
                 blob_hashes,
                 max_fee_per_blob_gas: Some(max_fee_per_blob_gas),
             },
+            SignedTransaction::Eip5806(Eip5806SignedTransaction {
+                nonce,
+                max_priority_fee_per_gas,
+                max_fee_per_gas,
+                gas_limit,
+                to,
+                input,
+                access_list,
+                ..
+            }) => Self {
+                caller: transaction.caller,
+                gas_limit,
+                gas_price: max_fee_per_gas,
+                gas_priority_fee: Some(max_priority_fee_per_gas),
+                transact_to: TransactTo::DelegateCall(address), // TODO implement DelegateCall in revm
+                data: input,
+                chain_id,
+                nonce: Some(nonce),
+                access_list: access_list.into(),
+                blob_hashes: Vec::new(),
+                max_fee_per_blob_gas: None,
+            },
         }
     }
 }
@@ -377,6 +399,30 @@ impl TryFrom<Transaction> for ExecutableTransaction {
                 blob_hashes: value
                     .blob_versioned_hashes
                     .ok_or(TransactionConversionError::MissingBlobHashes)?,
+                r: value.r,
+                s: value.s,
+                hash: OnceLock::from(value.hash),
+                is_fake: false,
+            }),
+            Some(4) => SignedTransaction::Eip5806(Eip5806SignedTransaction {
+                odd_y_parity: value.odd_y_parity(),
+                chain_id: value
+                    .chain_id
+                    .ok_or(TransactionConversionError::MissingChainId)?,
+                nonce: value.nonce,
+                max_priority_fee_per_gas: value
+                    .max_priority_fee_per_gas
+                    .ok_or(TransactionConversionError::MissingMaxPriorityFeePerGas)?,
+                max_fee_per_gas: value
+                    .max_fee_per_gas
+                    .ok_or(TransactionConversionError::MissingMaxFeePerGas)?,
+                gas_limit: value.gas.to(),
+                kind,
+                input: value.input,
+                access_list: value
+                    .access_list
+                    .ok_or(TransactionConversionError::MissingAccessList)?
+                    .into(),
                 r: value.r,
                 s: value.s,
                 hash: OnceLock::from(value.hash),

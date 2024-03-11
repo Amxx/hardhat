@@ -37,8 +37,8 @@ pub struct Transaction {
     pub from: Address,
     /// address of the receiver. null when its a contract creation transaction.
     pub to: Option<Address>,
-    /// value transferred in Wei
-    pub value: U256,
+    /// value transferred in Wei. Not present in EIP-5806 transactions
+    pub value: Option<U256>,
     /// gas price provided by the sender in Wei
     pub gas_price: U256,
     /// gas provided by the sender
@@ -48,7 +48,7 @@ pub struct Transaction {
     /// ECDSA recovery id
     #[serde(with = "crate::serde::u64")]
     pub v: u64,
-    /// Y-parity for EIP-2930 and EIP-1559 transactions. In theory these
+    /// Y-parity for EIP-2930, EIP-1559 and EIP-5806 transactions. In theory these
     /// transactions types shouldn't have a `v` field, but in practice they
     /// are returned by nodes.
     #[serde(
@@ -70,7 +70,7 @@ pub struct Transaction {
     )]
     pub chain_id: Option<u64>,
     /// integer of the transaction type, 0x0 for legacy transactions, 0x1 for
-    /// access list types, 0x2 for dynamic fees
+    /// access list types, 0x2 for dynamic fees, 0x4 for delegate transactions
     #[serde(
         rename = "type",
         default,

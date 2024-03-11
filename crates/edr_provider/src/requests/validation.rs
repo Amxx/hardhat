@@ -89,6 +89,14 @@ impl<'data> From<&'data SignedTransaction> for SpecValidationData<'data> {
                 blobs: None,
                 blob_hashes: Some(tx.blob_hashes.as_ref()),
             },
+            SignedTransaction::Eip5806(tx) => Self {
+                gas_price: None,
+                max_fee_per_gas: Some(&tx.max_fee_per_gas),
+                max_priority_fee_per_gas: Some(&tx.max_priority_fee_per_gas),
+                access_list: Some(tx.access_list.0.as_ref()),
+                blobs: None,
+                blob_hashes: None,
+            },
         }
     }
 }
@@ -175,7 +183,7 @@ pub fn validate_transaction_and_call_request<'a, LoggerErrorT: Debug>(
         ProviderError::UnsupportedAccessListParameter {
             minimum_hardfork, ..
         } => ProviderError::InvalidArgument(format!("\
-Access list received but is not supported by the current hardfork. 
+Access list received but is not supported by the current hardfork.
 
 You can use them by running Hardhat Network with 'hardfork' {minimum_hardfork:?} or later.
         ")),

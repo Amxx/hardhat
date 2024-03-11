@@ -261,6 +261,7 @@ impl BlockBuilder {
 
         let gas_price = transaction.gas_price();
         let effective_gas_price = if blockchain.spec_id() >= SpecId::LONDON {
+            // TODO: SignedTransaction::Eip1559 may not catch EIP-5806 transaction that have no value ?
             if let SignedTransaction::Eip1559(transaction) = &*transaction {
                 block.basefee
                     + (gas_price - block.basefee).min(transaction.max_priority_fee_per_gas)
@@ -292,6 +293,7 @@ impl BlockBuilder {
                     SignedTransaction::Eip2930(_) => TypedReceiptData::Eip2930 { status },
                     SignedTransaction::Eip1559(_) => TypedReceiptData::Eip1559 { status },
                     SignedTransaction::Eip4844(_) => TypedReceiptData::Eip4844 { status },
+                    SignedTransaction::Eip5806(_) => TypedReceiptData::Eip5806 { status },
                 },
                 spec_id: self.cfg.spec_id,
             },
