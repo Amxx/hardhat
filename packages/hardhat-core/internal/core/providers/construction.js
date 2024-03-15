@@ -63,6 +63,7 @@ async function createProvider(config, networkName, artifacts, experimentalHardha
             forkConfig,
             forkCachePath: paths !== undefined ? getForkCacheDirPath(paths) : undefined,
             enableTransientStorage: hardhatNetConfig.enableTransientStorage ?? false,
+            eips: hardhatNetConfig.eips ?? [],
         }, new ModulesLogger(hardhatNetConfig.loggingEnabled), artifacts);
     }
     else {

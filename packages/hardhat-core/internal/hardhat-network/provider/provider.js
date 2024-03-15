@@ -161,6 +161,7 @@ class HardhatNetworkProvider extends events_1.EventEmitter {
             chains: this._config.chains,
             allowBlocksWithSameTimestamp: this._config.allowBlocksWithSameTimestamp,
             enableTransientStorage: this._config.enableTransientStorage,
+            eips: this._config.eips,
         };
         const [common, node] = await node_1.HardhatNode.create(config);
         this._common = common;

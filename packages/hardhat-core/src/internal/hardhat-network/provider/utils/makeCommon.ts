@@ -8,6 +8,7 @@ export function makeCommon({
   chainId,
   networkId,
   hardfork,
+  eips,
   enableTransientStorage,
 }: LocalNodeConfig) {
   assertTransientStorageCompatibility(
@@ -24,6 +25,7 @@ export function makeCommon({
       // ethereumjs uses this name for the merge hardfork
       hardfork:
         hardfork === HardforkName.MERGE ? "mergeForkIdTransition" : hardfork,
+      eips,
     }
   );
 

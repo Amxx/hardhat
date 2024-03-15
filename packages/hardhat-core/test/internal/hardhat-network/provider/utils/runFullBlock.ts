@@ -57,6 +57,7 @@ export async function runFullBlock(
     chains: defaultHardhatNetworkParams.chains,
     allowBlocksWithSameTimestamp: false,
     enableTransientStorage: false,
+    eips: [],
   };
 
   const [common, forkedNode] = await HardhatNode.create(forkedNodeConfig);

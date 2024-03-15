@@ -155,6 +155,7 @@ export interface HardhatNetworkConfig {
   chains: HardhatNetworkChainsConfig;
   allowBlocksWithSameTimestamp?: boolean;
   enableTransientStorage?: boolean;
+  eips?: number[];
 }
 
 export type HardhatNetworkAccountsConfig =

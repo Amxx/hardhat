@@ -26,17 +26,17 @@ export declare const rpcNewBlockTag: t.UnionC<[t.Type<bigint, bigint, unknown>, 
     finalized: null;
 }>]>;
 export type RpcNewBlockTag = t.TypeOf<typeof rpcNewBlockTag>;
-export declare const optionalRpcNewBlockTag: t.Type<bigint | "pending" | {
+export declare const optionalRpcNewBlockTag: t.Type<bigint | "earliest" | "latest" | "pending" | "safe" | "finalized" | {
     blockNumber: bigint;
 } | {
     blockHash: Buffer;
     requireCanonical: boolean | undefined;
-} | "earliest" | "latest" | "safe" | "finalized" | undefined, bigint | "pending" | {
+} | undefined, bigint | "earliest" | "latest" | "pending" | "safe" | "finalized" | {
     blockNumber: bigint;
 } | {
     blockHash: Buffer;
     requireCanonical: boolean | undefined;
-} | "earliest" | "latest" | "safe" | "finalized" | undefined, unknown>;
+} | undefined, unknown>;
 export type OptionalRpcNewBlockTag = t.TypeOf<typeof optionalRpcNewBlockTag>;
 export declare const rpcOldBlockTag: t.UnionC<[t.Type<bigint, bigint, unknown>, t.KeyofC<{
     earliest: null;
@@ -46,6 +46,6 @@ export declare const rpcOldBlockTag: t.UnionC<[t.Type<bigint, bigint, unknown>, 
     finalized: null;
 }>]>;
 export type RpcOldBlockTag = t.TypeOf<typeof rpcOldBlockTag>;
-export declare const optionalRpcOldBlockTag: t.Type<bigint | "pending" | "earliest" | "latest" | "safe" | "finalized" | undefined, bigint | "pending" | "earliest" | "latest" | "safe" | "finalized" | undefined, unknown>;
+export declare const optionalRpcOldBlockTag: t.Type<bigint | "earliest" | "latest" | "pending" | "safe" | "finalized" | undefined, bigint | "earliest" | "latest" | "pending" | "safe" | "finalized" | undefined, unknown>;
 export type OptionalRpcOldBlockTag = t.TypeOf<typeof optionalRpcOldBlockTag>;
 //# sourceMappingURL=blockTag.d.ts.map

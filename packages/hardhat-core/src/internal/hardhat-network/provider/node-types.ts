@@ -33,6 +33,7 @@ interface CommonConfig {
   chains: HardhatNetworkChainsConfig;
   allowBlocksWithSameTimestamp: boolean;
   enableTransientStorage: boolean;
+  eips: number[];
 }
 
 export type LocalNodeConfig = CommonConfig;

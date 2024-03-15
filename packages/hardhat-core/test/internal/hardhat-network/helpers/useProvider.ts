@@ -97,6 +97,7 @@ export function useProvider({
         coinbase,
         allowBlocksWithSameTimestamp,
         enableTransientStorage: false,
+				eips: [],
       },
       this.logger
     );

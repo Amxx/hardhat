@@ -84,6 +84,7 @@ describe("HardhatNode", () => {
     chains: defaultHardhatNetworkParams.chains,
     allowBlocksWithSameTimestamp: false,
     enableTransientStorage: false,
+		eips: [],
   };
   const gasPrice = 20;
   let node: HardhatNode;
@@ -909,6 +910,7 @@ describe("HardhatNode", () => {
       coinbase: "0x0000000000000000000000000000000000000000",
       allowBlocksWithSameTimestamp: false,
       enableTransientStorage: false,
+			eips: [],
     };
 
     describe("when forking with a default hardfork activation history", function () {
@@ -1076,6 +1078,7 @@ describe("HardhatNode", () => {
       coinbase: "0x0000000000000000000000000000000000000000",
       allowBlocksWithSameTimestamp: false,
       enableTransientStorage: false,
+			eips: [],
     };
     const [, hardhatNode] = await HardhatNode.create(nodeConfig);
 
@@ -1110,6 +1113,7 @@ describe("HardhatNode", () => {
       coinbase: "0x0000000000000000000000000000000000000000",
       allowBlocksWithSameTimestamp: false,
       enableTransientStorage: true,
+			eips: [],
     };
 
     describe("When on a fork that doesn't support it", function () {
@@ -1281,6 +1285,7 @@ describe("HardhatNode", () => {
       coinbase: "0x0000000000000000000000000000000000000000",
       allowBlocksWithSameTimestamp: false,
       enableTransientStorage: false,
+			eips: [],
     };
 
     describe("When in a pre-cancun hardfork", function () {
@@ -1582,6 +1587,7 @@ describe("HardhatNode", () => {
       coinbase: "0x0000000000000000000000000000000000000000",
       allowBlocksWithSameTimestamp: false,
       enableTransientStorage: false,
+			eips: [],
     };
 
     describe("When in a pre-cancun hardfork", function () {
@@ -1744,6 +1750,7 @@ describe("HardhatNode", () => {
       coinbase: "0x0000000000000000000000000000000000000000",
       allowBlocksWithSameTimestamp: false,
       enableTransientStorage: false,
+			eips: [],
     };
 
     describe("When in a pre-cancun hardfork", function () {

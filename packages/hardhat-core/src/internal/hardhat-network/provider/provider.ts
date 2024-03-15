@@ -81,6 +81,7 @@ interface HardhatNetworkProviderConfig {
   forkConfig?: ForkConfig;
   forkCachePath?: string;
   enableTransientStorage: boolean;
+  eips: number[];
 }
 
 export class HardhatNetworkProvider
@@ -255,6 +256,7 @@ export class HardhatNetworkProvider
       chains: this._config.chains,
       allowBlocksWithSameTimestamp: this._config.allowBlocksWithSameTimestamp,
       enableTransientStorage: this._config.enableTransientStorage,
+      eips: this._config.eips,
     };
 
     const [common, node] = await HardhatNode.create(config);

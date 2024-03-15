@@ -26,6 +26,7 @@ interface HardhatNetworkProviderConfig {
     forkConfig?: ForkConfig;
     forkCachePath?: string;
     enableTransientStorage: boolean;
+    eips: number[];
 }
 export declare class HardhatNetworkProvider extends EventEmitter implements EIP1193Provider {
     private readonly _config;

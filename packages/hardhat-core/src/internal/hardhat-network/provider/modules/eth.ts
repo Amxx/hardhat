@@ -92,6 +92,7 @@ const EIP1559_MIN_HARDFORK = HardforkName.LONDON;
 const ACCESS_LIST_MIN_HARDFORK = HardforkName.BERLIN;
 const EIP155_MIN_HARDFORK = HardforkName.SPURIOUS_DRAGON;
 const EIP3860_MIN_HARDFORK = HardforkName.SHANGHAI;
+const EIP5806_MIN_HARDFORK = HardforkName.CANCUN;
 
 /* eslint-disable @nomicfoundation/hardhat-internal-rules/only-hardhat-error */
 export class EthModule extends Base {
@@ -1756,7 +1757,7 @@ Enable the 'allowUnlimitedContractSize' option to allow init codes of any length
       );
     }
 
-    if (rawTx[0] <= 0x7f && rawTx[0] !== 1 && rawTx[0] !== 2) {
+    if (rawTx[0] <= 0x7f && rawTx[0] !== 1 && rawTx[0] !== 2 && rawTx[0] !== 4) {
       throw new InvalidArgumentsError(`Invalid transaction type ${rawTx[0]}.
 
 Your raw transaction is incorrectly formatted, or Hardhat Network doesn't support this transaction type yet.`);
@@ -1775,6 +1776,13 @@ You can use them by running Hardhat Network with 'hardfork' ${ACCESS_LIST_MIN_HA
         `Trying to send an EIP-1559 transaction but they are not supported by the current hard fork.
 
 You can use them by running Hardhat Network with 'hardfork' ${EIP1559_MIN_HARDFORK} or later.`
+      );
+    }
+    if (rawTx[0] === 4 && !this._common.gteHardfork(EIP5806_MIN_HARDFORK)) {
+      throw new InvalidArgumentsError(
+        `Trying to send an EIP-5806 transaction but they are not supported by the current hard fork.
+
+You can use them by running Hardhat Network with 'hardfork' ${EIP5806_MIN_HARDFORK} or later.`
       );
     }
   }
