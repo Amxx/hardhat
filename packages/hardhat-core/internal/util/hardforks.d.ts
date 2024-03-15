@@ -15,7 +15,8 @@ export declare enum HardforkName {
     GRAY_GLACIER = "grayGlacier",
     MERGE = "merge",
     SHANGHAI = "shanghai",
-    CANCUN = "cancun"
+    CANCUN = "cancun",
+    PRAGUE = "prague"
 }
 export declare function getHardforkName(name: string): HardforkName;
 /**

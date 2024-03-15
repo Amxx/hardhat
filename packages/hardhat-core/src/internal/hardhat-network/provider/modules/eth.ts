@@ -92,7 +92,7 @@ const EIP1559_MIN_HARDFORK = HardforkName.LONDON;
 const ACCESS_LIST_MIN_HARDFORK = HardforkName.BERLIN;
 const EIP155_MIN_HARDFORK = HardforkName.SPURIOUS_DRAGON;
 const EIP3860_MIN_HARDFORK = HardforkName.SHANGHAI;
-const EIP5806_MIN_HARDFORK = HardforkName.CANCUN;
+const EIP5806_MIN_HARDFORK = HardforkName.PRAGUE;
 
 /* eslint-disable @nomicfoundation/hardhat-internal-rules/only-hardhat-error */
 export class EthModule extends Base {

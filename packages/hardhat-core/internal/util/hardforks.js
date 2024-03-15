@@ -21,6 +21,7 @@ var HardforkName;
     HardforkName["MERGE"] = "merge";
     HardforkName["SHANGHAI"] = "shanghai";
     HardforkName["CANCUN"] = "cancun";
+    HardforkName["PRAGUE"] = "prague";
 })(HardforkName = exports.HardforkName || (exports.HardforkName = {}));
 const HARDFORKS_ORDER = [
     HardforkName.FRONTIER,
@@ -40,6 +41,7 @@ const HARDFORKS_ORDER = [
     HardforkName.MERGE,
     HardforkName.SHANGHAI,
     HardforkName.CANCUN,
+    HardforkName.PRAGUE,
 ];
 function getHardforkName(name) {
     const hardforkName = Object.values(HardforkName)[Object.values(HardforkName).indexOf(name)];

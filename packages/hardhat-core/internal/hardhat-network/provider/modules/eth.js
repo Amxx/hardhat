@@ -50,7 +50,7 @@ const EIP1559_MIN_HARDFORK = hardforks_1.HardforkName.LONDON;
 const ACCESS_LIST_MIN_HARDFORK = hardforks_1.HardforkName.BERLIN;
 const EIP155_MIN_HARDFORK = hardforks_1.HardforkName.SPURIOUS_DRAGON;
 const EIP3860_MIN_HARDFORK = hardforks_1.HardforkName.SHANGHAI;
-const EIP5806_MIN_HARDFORK = hardforks_1.HardforkName.CANCUN;
+const EIP5806_MIN_HARDFORK = hardforks_1.HardforkName.PRAGUE;
 /* eslint-disable @nomicfoundation/hardhat-internal-rules/only-hardhat-error */
 class EthModule extends base_1.Base {
     constructor(_common, _node, _throwOnTransactionFailures, _throwOnCallFailures, _logger, _experimentalHardhatNetworkMessageTraceHooks = []) {
