@@ -185,6 +185,7 @@ export declare class HardhatNode extends EventEmitter {
     private _persistIrregularWorldState;
     isEip1559Active(blockNumberOrPending?: bigint | "pending"): boolean;
     isEip4895Active(blockNumberOrPending?: bigint | "pending"): boolean;
+    isEip5806Active(blockNumberOrPending?: bigint | "pending"): boolean;
     isCancunBlock(blockNumberOrPending?: bigint | "pending"): boolean;
     isPostMergeHardfork(): boolean;
     isPostCancunHardfork(): boolean;

@@ -7,6 +7,7 @@ import { rpcAddress, rpcData, rpcHash, rpcQuantity } from "../base-types";
 // Type used by eth_sendTransaction
 export const rpcTransactionRequest = t.type(
   {
+    type: optionalOrNullable(rpcQuantity),
     from: rpcAddress,
     to: optionalOrNullable(rpcAddress),
     gas: optionalOrNullable(rpcQuantity),
@@ -27,6 +28,7 @@ export const rpcTransactionRequest = t.type(
 // This type represents possibly valid inputs to rpcTransactionRequest.
 // TODO: It can probably be inferred by io-ts.
 export interface RpcTransactionRequestInput {
+  type?: string;
   from: string;
   to?: string;
   gas?: string;

@@ -1,5 +1,6 @@
 import * as t from "io-ts";
 export declare const rpcTransactionRequest: t.TypeC<{
+    type: t.Type<bigint | undefined, bigint | undefined, unknown>;
     from: t.Type<Buffer, Buffer, unknown>;
     to: t.Type<Buffer | undefined, Buffer | undefined, unknown>;
     gas: t.Type<bigint | undefined, bigint | undefined, unknown>;
@@ -21,6 +22,7 @@ export declare const rpcTransactionRequest: t.TypeC<{
     blobVersionedHashes: t.Type<Buffer[] | undefined, Buffer[] | undefined, unknown>;
 }>;
 export interface RpcTransactionRequestInput {
+    type?: string;
     from: string;
     to?: string;
     gas?: string;

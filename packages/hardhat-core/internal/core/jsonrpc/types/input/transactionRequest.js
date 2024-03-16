@@ -30,6 +30,7 @@ const access_list_1 = require("../access-list");
 const base_types_1 = require("../base-types");
 // Type used by eth_sendTransaction
 exports.rpcTransactionRequest = t.type({
+    type: (0, io_ts_1.optionalOrNullable)(base_types_1.rpcQuantity),
     from: base_types_1.rpcAddress,
     to: (0, io_ts_1.optionalOrNullable)(base_types_1.rpcAddress),
     gas: (0, io_ts_1.optionalOrNullable)(base_types_1.rpcQuantity),

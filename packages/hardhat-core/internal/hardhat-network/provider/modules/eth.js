@@ -704,6 +704,7 @@ class EthModule extends base_1.Base {
     // Utility methods
     async _rpcTransactionRequestToNodeTransactionParams(rpcTx) {
         const baseParams = {
+            type: rpcTx.type,
             to: rpcTx.to,
             from: rpcTx.from,
             gasLimit: rpcTx.gas !== undefined ? rpcTx.gas : this._node.getBlockGasLimit(),

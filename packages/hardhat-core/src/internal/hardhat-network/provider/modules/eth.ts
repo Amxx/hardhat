@@ -1271,6 +1271,7 @@ export class EthModule extends Base {
     rpcTx: RpcTransactionRequest
   ): Promise<TransactionParams> {
     const baseParams = {
+      type: rpcTx.type,
       to: rpcTx.to,
       from: rpcTx.from,
       gasLimit:

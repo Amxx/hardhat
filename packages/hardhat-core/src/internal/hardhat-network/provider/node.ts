@@ -10,6 +10,7 @@ import {
   LegacyTransaction,
   TypedTransaction,
   BlobEIP4844Transaction,
+  DelegateEIP5806Transaction,
 } from "@nomicfoundation/ethereumjs-tx";
 import {
   Address,
@@ -484,23 +485,32 @@ Hardhat Network's forking functionality only works with blocks from at least spu
   public async getSignedTransaction(
     txParams: TransactionParams
   ): Promise<TypedTransaction> {
+    const { type } = txParams;
     const senderAddress = bufferToHex(txParams.from);
 
     const pk = this._localAccounts.get(senderAddress);
     if (pk !== undefined) {
       let tx: TypedTransaction;
 
-      if ("blobs" in txParams) {
+      if (type === 4n) {
+        if (!("maxFeePerGas" in txParams) || txParams.value !== 0n) throw new Error(`Invalid parameters for type 4 transaction`);
+        tx = DelegateEIP5806Transaction.fromTxData({...txParams, value: 0n}, {
+          common: this._vm.common,
+          allowUnlimitedInitCodeSize: true,
+        });
+      } else if (type === 3n || (type === undefined && "blobs" in txParams)) {
+        if (!("blobs" in txParams)) throw new Error(`Invalid parameters for type 3 transaction`);
         tx = BlobEIP4844Transaction.fromTxData(txParams, {
           common: this._vm.common,
           allowUnlimitedInitCodeSize: true,
         });
-      } else if ("maxFeePerGas" in txParams) {
+      } else if (type === 2n || (type === undefined && "maxFeePerGas" in txParams)) {
+        if (!("maxFeePerGas" in txParams)) throw new Error(`Invalid parameters for type 2 transaction`);
         tx = FeeMarketEIP1559Transaction.fromTxData(txParams, {
           common: this._vm.common,
           allowUnlimitedInitCodeSize: true,
         });
-      } else if ("accessList" in txParams) {
+      } else if (type === 1n || (type === undefined && "accessList" in txParams)) {
         tx = AccessListEIP2930Transaction.fromTxData(txParams, {
           common: this._vm.common,
           allowUnlimitedInitCodeSize: true,
@@ -2792,6 +2802,19 @@ Hardhat Network's forking functionality only works with blocks from at least spu
       );
     }
     return this._vm.common.gteHardfork("shanghai");
+  }
+
+  public isEip5806Active(blockNumberOrPending?: bigint | "pending"): boolean {
+    if (
+      blockNumberOrPending !== undefined &&
+      blockNumberOrPending !== "pending"
+    ) {
+      return this._vm.common.hardforkGteHardfork(
+        this._selectHardfork(blockNumberOrPending),
+        "prague"
+      ) && this._vm.common.isActivatedEIP(1559);
+    }
+    return this._vm.common.gteHardfork("prague") && this._vm.common.isActivatedEIP(1559);
   }
 
   public isCancunBlock(blockNumberOrPending?: bigint | "pending"): boolean {

@@ -86,6 +86,7 @@ export type TransactionParams =
   | BlobTransactionParams;
 
 interface BaseTransactionParams {
+  type?: bigint,
   // `to` should be undefined for contract creation
   to?: Uint8Array;
   from: Uint8Array;

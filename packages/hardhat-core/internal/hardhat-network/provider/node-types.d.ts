@@ -61,6 +61,7 @@ export interface CallParams {
 }
 export type TransactionParams = LegacyTransactionParams | AccessListTransactionParams | EIP1559TransactionParams | BlobTransactionParams;
 interface BaseTransactionParams {
+    type?: bigint;
     to?: Uint8Array;
     from: Uint8Array;
     gasLimit: bigint;
