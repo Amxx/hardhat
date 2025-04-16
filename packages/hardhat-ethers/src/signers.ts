@@ -1,4 +1,9 @@
-import type { BlockTag, TransactionRequest } from "ethers";
+import type {
+  BlockTag,
+  TransactionRequest,
+  AuthorizationRequest,
+  Authorization,
+} from "ethers";
 import {
   assertArgument,
   ethers,
@@ -188,6 +193,18 @@ export class HardhatEthersSigner implements ethers.Signer {
         }
       ),
     ]);
+  }
+
+  public async populateAuthorization(
+    _auth: AuthorizationRequest
+  ): Promise<AuthorizationRequest> {
+    throw new NotImplementedError("HardhatEthersSigner.populateAuthorization");
+  }
+
+  public async authorize(
+    _authorization: AuthorizationRequest
+  ): Promise<Authorization> {
+    throw new NotImplementedError("HardhatEthersSigner.authorize");
   }
 
   public async getAddress(): Promise<string> {

@@ -12,6 +12,7 @@ import type {
 
 import {
   accessListify,
+  authorizationify,
   assert,
   assertArgument,
   getAddress,
@@ -73,6 +74,10 @@ export function copyRequest(
 
   if (req.accessList !== null && req.accessList !== undefined) {
     result.accessList = accessListify(req.accessList);
+  }
+
+  if (req.authorizationList !== null && req.authorizationList !== undefined) {
+    result.authorizationList = req.authorizationList.map(authorizationify);
   }
 
   if ("blockTag" in req) {
@@ -213,6 +218,10 @@ export function formatTransactionResponse(
         return getNumber(v);
       },
       accessList: allowNull(accessListify, null),
+      authorizationList: allowNull(
+        (auths) => auths.map(authorizationify),
+        null
+      ),
 
       blockHash: allowNull(formatHash, null),
       blockNumber: allowNull(getNumber, null),
@@ -251,8 +260,14 @@ export function formatTransactionResponse(
 
   // Add an access list to supported transaction types
   // eslint-disable-next-line eqeqeq
-  if ((value.type === 1 || value.type === 2) && value.accessList == null) {
+  if ((value.type === 1 || value.type === 2 || value.type === 3 || value.type === 4) && value.accessList == null) {
     result.accessList = [];
+  }
+
+  // Add an authorization list to supported transaction types
+  // eslint-disable-next-line eqeqeq
+  if (value.type === 4 && value.authorizationList == null) {
+    result.authorizationList = [];
   }
 
   // Compute the signature
@@ -418,6 +433,20 @@ export function getRpcTransaction(
   // Normalize the access list object
   if (tx.accessList !== null && tx.accessList !== undefined) {
     result.accessList = accessListify(tx.accessList);
+  }
+
+  if (tx.authorizationList !== null && tx.authorizationList !== undefined) {
+    result.authorizationList = tx.authorizationList.map((_a) => {
+      const a = authorizationify(_a);
+      return {
+        address: a.address,
+        nonce: a.nonce.toString(),
+        chainId: a.chainId.toString(),
+        yParity: a.signature.yParity.toString(),
+        r: a.signature.r,
+        s: a.signature.s,
+      };
+    });
   }
 
   return result;
