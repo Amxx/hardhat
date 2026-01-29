@@ -1,5 +1,8 @@
 {
   "name": "simple-project",
   "private": "true",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "solidity-ast": "^0.4.61"
+  }
 }

@@ -416,6 +416,10 @@ importers:
         version: 5.8.3
 
   v-next/hardhat-exposed-example:
+    dependencies:
+      solidity-ast:
+        specifier: ^0.4.61
+        version: 0.4.61
     devDependencies:
       '@nomicfoundation/hardhat-node-test-reporter':
         specifier: workspace:^3.0.2
@@ -5636,6 +5640,9 @@ packages:
     resolution: {integrity: sha512-HLpt+uLy/pxB+bum/9DzAgiKS8CX1EvbWxI4zlmgGCExImLdiad2iCwXT5Z4c9c3Eq8rP2318mPW2c+QbtjK8A==}
     engines: {node: '>= 10.0.0', npm: '>= 3.0.0'}
 
+  solidity-ast@0.4.61:
+    resolution: {integrity: sha512-OYBJYcYyG7gLV0VuXl9CUrvgJXjV/v0XnR4+1YomVe3q+QyENQXJJxAEASUz4vN6lMAl+C8RSRSr5MBAz09f6w==}
+
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
@@ -10370,6 +10377,8 @@ snapshots:
     dependencies:
       ip-address: 10.1.0
       smart-buffer: 4.2.0
+
+  solidity-ast@0.4.61: {}
 
   source-map-js@1.2.1: {}
 

@@ -11,21 +11,14 @@
  * but after resolution the field is guaranteed to exist.
  */
 import "hardhat/types/config";
+import { ExposedUserConfig, ExposedConfig } from "./internal/types.js";
+
 declare module "hardhat/types/config" {
-  export interface ProjectPathsUserConfig {
-    /**
-     * Path to the directory where exposed contract wrappers will be generated.
-     * Can be relative (resolved from project root) or absolute.
-     * Defaults to "exposed-contracts".
-     */
-    exposedContracts?: string;
+  export interface HardhatUserConfig {
+    exposed?: ExposedUserConfig;
   }
 
-  export interface ProjectPathsConfig {
-    /**
-     * Resolved absolute path to the exposed contracts directory.
-     * Guaranteed to be set after config resolution.
-     */
-    exposedContracts: string;
+  export interface HardhatConfig {
+    exposed: ExposedConfig;
   }
 }

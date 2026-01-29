@@ -11,7 +11,7 @@ describe("hardhat-exposed-example", () => {
       const hre = await createFixtureProjectHRE("simple-project");
 
       // Remove the exposed contracts directory to simulate a fresh build
-      await removeDirectory(hre.config.paths.exposedContracts);
+      await removeDirectory(hre.config.exposed.outDir);
       await removeDirectory(hre.config.paths.artifacts);
       await removeDirectory(hre.config.paths.cache);
 
@@ -21,15 +21,15 @@ describe("hardhat-exposed-example", () => {
       // Verify exposed files were generated
       await assertFilesExistsAsExposed(
         hre.config.paths.sources.solidity[0],
-        hre.config.paths.exposedContracts,
+        hre.config.exposed.outDir,
       );
 
       // Verify artifacts were created for exposed contracts
-      const aExposedArtifact = await hre.artifacts.readArtifact("AExposed");
-      assert.equal(aExposedArtifact.contractName, "AExposed");
+      const aExposedArtifact = await hre.artifacts.readArtifact("$A");
+      assert.equal(aExposedArtifact.contractName, "$A");
 
-      const aaExposedArtifact = await hre.artifacts.readArtifact("AAExposed");
-      assert.equal(aaExposedArtifact.contractName, "AAExposed");
+      const aaExposedArtifact = await hre.artifacts.readArtifact("$AA");
+      assert.equal(aaExposedArtifact.contractName, "$AA");
     });
   });
 
@@ -38,7 +38,7 @@ describe("hardhat-exposed-example", () => {
       const hre = await createFixtureProjectHRE("simple-project");
 
       // First build - generates exposed contracts
-      await removeDirectory(hre.config.paths.exposedContracts);
+      await removeDirectory(hre.config.exposed.outDir);
       await removeDirectory(hre.config.paths.artifacts);
       await removeDirectory(hre.config.paths.cache);
 
@@ -47,7 +47,7 @@ describe("hardhat-exposed-example", () => {
 
       // Get the modification time of the exposed contract
       const exposedFilePath = path.join(
-        hre.config.paths.exposedContracts,
+        hre.config.exposed.outDir,
         "contracts",
         "A.sol",
       );
@@ -75,7 +75,7 @@ describe("hardhat-exposed-example", () => {
       const hre = await createFixtureProjectHRE("simple-project");
 
       // First build
-      await removeDirectory(hre.config.paths.exposedContracts);
+      await removeDirectory(hre.config.exposed.outDir);
       await removeDirectory(hre.config.paths.artifacts);
       await removeDirectory(hre.config.paths.cache);
 
@@ -84,7 +84,7 @@ describe("hardhat-exposed-example", () => {
 
       // Get the content of the exposed contract
       const exposedFilePath = path.join(
-        hre.config.paths.exposedContracts,
+        hre.config.exposed.outDir,
         "contracts",
         "A.sol",
       );
@@ -92,12 +92,12 @@ describe("hardhat-exposed-example", () => {
 
       // Verify initial content
       assert.ok(
-        firstContent.includes("AExposed"),
-        "Initial exposed file should contain AExposed",
+        firstContent.includes("$A"),
+        "Initial exposed file should contain $A",
       );
       assert.ok(
-        firstContent.includes("AAExposed"),
-        "Initial exposed file should contain AAExposed",
+        firstContent.includes("$AA"),
+        "Initial exposed file should contain $AA",
       );
 
       // Modify the source contract - add a new contract
@@ -117,15 +117,15 @@ describe("hardhat-exposed-example", () => {
 
         // Verify updated content includes the new contract
         assert.ok(
-          updatedContent.includes("AExposed"),
-          "Updated file should still contain AExposed",
+          updatedContent.includes("$A"),
+          "Updated file should still contain $A",
         );
         assert.ok(
-          updatedContent.includes("AAExposed"),
-          "Updated file should still contain AAExposed",
+          updatedContent.includes("$AA"),
+          "Updated file should still contain $AA",
         );
         assert.ok(
-          updatedContent.includes("AAAExposed"),
+          updatedContent.includes("$AAA"),
           "New contract should be exposed",
         );
       } finally {
@@ -140,7 +140,7 @@ describe("hardhat-exposed-example", () => {
       const hre = await createFixtureProjectHRE("simple-project");
 
       // First build
-      await removeDirectory(hre.config.paths.exposedContracts);
+      await removeDirectory(hre.config.exposed.outDir);
       await removeDirectory(hre.config.paths.artifacts);
       await removeDirectory(hre.config.paths.cache);
 
@@ -149,7 +149,7 @@ describe("hardhat-exposed-example", () => {
 
       // Get the modification time
       const exposedFilePath = path.join(
-        hre.config.paths.exposedContracts,
+        hre.config.exposed.outDir,
         "contracts",
         "A.sol",
       );
@@ -176,7 +176,7 @@ describe("hardhat-exposed-example", () => {
       const hre = await createFixtureProjectHRE("simple-project");
 
       // Clean build from scratch
-      await removeDirectory(hre.config.paths.exposedContracts);
+      await removeDirectory(hre.config.exposed.outDir);
       await removeDirectory(hre.config.paths.artifacts);
       await removeDirectory(hre.config.paths.cache);
 
@@ -184,10 +184,10 @@ describe("hardhat-exposed-example", () => {
       await buildTask.run({ noTests: true, quiet: true });
 
       // Verify artifacts exist
-      const artifactPath = await hre.artifacts.getArtifactPath("AExposed");
+      const artifactPath = await hre.artifacts.getArtifactPath("$A");
       assert.ok(
         await fileExists(artifactPath),
-        "AExposed artifact should exist",
+        "$A artifact should exist",
       );
 
       // Build again - cleanup should preserve exposed artifacts
@@ -196,12 +196,12 @@ describe("hardhat-exposed-example", () => {
       // Verify artifacts still exist after cleanup
       assert.ok(
         await fileExists(artifactPath),
-        "AExposed artifact should still exist after rebuild",
+        "$A artifact should still exist after rebuild",
       );
 
       // Verify we can read the artifact
-      const artifact = await hre.artifacts.readArtifact("AExposed");
-      assert.equal(artifact.contractName, "AExposed");
+      const artifact = await hre.artifacts.readArtifact("$A");
+      assert.equal(artifact.contractName, "$A");
     });
   });
 
@@ -210,7 +210,7 @@ describe("hardhat-exposed-example", () => {
       const hre = await createFixtureProjectHRE("simple-project");
 
       // Clean start
-      await removeDirectory(hre.config.paths.exposedContracts);
+      await removeDirectory(hre.config.exposed.outDir);
       await removeDirectory(hre.config.paths.artifacts);
       await removeDirectory(hre.config.paths.cache);
 
@@ -262,7 +262,7 @@ contract WillFailExposed {
         await fs.rm(sourceFilePath, { force: true });
         // Clean up exposed contract
         const exposedPath = path.join(
-          hre.config.paths.exposedContracts,
+          hre.config.exposed.outDir,
           "contracts",
           "WillFailExposed.sol",
         );
@@ -290,7 +290,8 @@ async function assertFilesExistsAsExposed(
   exposedContractsDirectory: string,
 ) {
   // Get all .sol files from contracts directory
-  const contractFiles = await getFilesRecursively(contractsDirectory, ".sol");
+  const contractFiles = await getFilesRecursively(contractsDirectory, ".sol")
+    .then(files => files.filter(f => !path.basename(f).match(/^I[A-Z]/)));
 
   for (const contractFile of contractFiles) {
     // Calculate expected exposed path

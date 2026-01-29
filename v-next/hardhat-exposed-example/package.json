@@ -42,7 +42,10 @@
     "LICENSE",
     "README.md"
   ],
-  "devDependencies": {
+  "dependencies": {
+    "solidity-ast": "^0.4.61"
+  },
+	"devDependencies": {
     "@nomicfoundation/hardhat-node-test-reporter": "workspace:^3.0.2",
     "@types/node": "^22.0.0",
     "c8": "^9.1.0",

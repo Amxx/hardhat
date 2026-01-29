@@ -17,7 +17,7 @@ async function pathExists(filePath: string): Promise<boolean> {
 describe("Clean hook", () => {
   it("should delete exposedContracts directory when it exists", async () => {
     const hre = await createFixtureProjectHRE("simple-project");
-    const exposedPath = hre.config.paths.exposedContracts;
+    const exposedPath = hre.config.exposed.outDir;
 
     // Setup: ensure directory exists with content
     await fs.mkdir(exposedPath, { recursive: true });
@@ -32,7 +32,7 @@ describe("Clean hook", () => {
 
   it("should delete exposedContracts directory with nested content", async () => {
     const hre = await createFixtureProjectHRE("simple-project");
-    const exposedPath = hre.config.paths.exposedContracts;
+    const exposedPath = hre.config.exposed.outDir;
 
     // Setup: create directory with nested content
     const nestedDir = path.join(exposedPath, "contracts", "nested");
@@ -49,7 +49,7 @@ describe("Clean hook", () => {
 
   it("should not throw when exposedContracts directory does not exist", async () => {
     const hre = await createFixtureProjectHRE("simple-project");
-    const exposedPath = hre.config.paths.exposedContracts;
+    const exposedPath = hre.config.exposed.outDir;
 
     // Ensure directory does not exist
     await fs.rm(exposedPath, { recursive: true, force: true });
@@ -60,7 +60,7 @@ describe("Clean hook", () => {
 
   it("should not throw when exposedContracts is an empty directory", async () => {
     const hre = await createFixtureProjectHRE("simple-project");
-    const exposedPath = hre.config.paths.exposedContracts;
+    const exposedPath = hre.config.exposed.outDir;
 
     // Setup: create empty directory
     await fs.rm(exposedPath, { recursive: true, force: true });

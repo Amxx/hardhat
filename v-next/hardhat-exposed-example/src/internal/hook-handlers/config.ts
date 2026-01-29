@@ -1,25 +1,46 @@
+import path from "node:path";
+
 import type { ConfigHooks } from "hardhat/types/hooks";
 
-import { resolvePluginConfig, validatePluginConfig } from "../config.js";
+export default async (): Promise<Partial<ConfigHooks>> => ({
+  validateUserConfig: async (userConfig) => {
+    const results: Array<{ path: string[]; message: string }> = [];
 
-export default async (): Promise<Partial<ConfigHooks>> => {
-  const handlers: Partial<ConfigHooks> = {
-    validateUserConfig: async (userConfig) => {
-      return validatePluginConfig(userConfig);
-    },
-    resolveUserConfig: async (
-      userConfig,
-      resolveConfigurationVariable,
-      next,
-    ) => {
-      const partiallyResolvedConfig = await next(
-        userConfig,
-        resolveConfigurationVariable,
-      );
+    if (userConfig.exposed?.prefix !== undefined && typeof userConfig.exposed?.prefix !== "string") {
+      results.push({ path: ["exposed", "prefix"], message: "Expected an optional string." });
+    }
+    if (userConfig.exposed?.exclude !== undefined && (!Array.isArray(userConfig.exposed.exclude) || userConfig.exposed.exclude.some(e => typeof e !== "string"))) {
+      results.push({ path: ["exposed", "exclude"], message: "Expected an optional string[]." });
+    }
+    if (userConfig.exposed?.include !== undefined && (!Array.isArray(userConfig.exposed.include) || userConfig.exposed.include.some(e => typeof e !== "string"))) {
+      results.push({ path: ["exposed", "include"], message: "Expected an optional string[]." });
+    }
+    if (userConfig.exposed?.outDir !== undefined && typeof userConfig.exposed?.outDir !== "string") {
+      results.push({ path: ["exposed", "outDir"], message: "Expected an optional string." });
+    }
+    if (userConfig.exposed?.initializers !== undefined && typeof userConfig.exposed?.initializers !== "boolean") {
+      results.push({ path: ["exposed", "initializers"], message: "Expected an optional boolean." });
+    }
+    return results;
+  },
 
-      return resolvePluginConfig(userConfig, partiallyResolvedConfig);
-    },
-  };
-
-  return handlers;
-};
+  resolveUserConfig: (
+    userConfig,
+    resolveConfigurationVariable,
+    next,
+  ) => next(
+    userConfig,
+    resolveConfigurationVariable,
+  ).then(partiallyResolvedConfig => {
+    const makeAbsolutePath = (p: string) => path.isAbsolute(p) ? p : path.resolve(partiallyResolvedConfig.paths.root, p);
+    return {
+      ...partiallyResolvedConfig,
+      exposed: {
+        ...userConfig.exposed,
+        exclude: (userConfig.exposed?.exclude ?? []).map(makeAbsolutePath),
+        include: (userConfig.exposed?.include ?? ['**/*']).map(makeAbsolutePath),
+        outDir: makeAbsolutePath(userConfig.exposed?.outDir ?? 'contracts-exposed'),
+      },
+    };
+  }),
+});
